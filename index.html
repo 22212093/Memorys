@@ -85,13 +85,13 @@
         
         /* 탭 특화 스타일 */
         .chunk-box { background: #2a2a2a; border-left: 4px solid var(--kakao-yellow); padding: 15px; border-radius: 6px; font-weight: bold; flex: 1 1 calc(33% - 15px); min-width: 110px; text-align: center; }
-        .story-word { background: var(--pomo-blue); padding: 6px 12px; border-radius: 6px; font-weight: bold; color: #fff; }
         .acronym-text { font-size: 2.5rem; color: var(--kakao-yellow); font-weight: bold; letter-spacing: 5px; background: #222; padding: 20px; border-radius: 12px; text-align: center; width: 100%; }
         
-        /* 페그워드 */
-        .peg-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; width: 100%; max-width: 600px; }
-        .peg-item { background: #222; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #444; }
-        .peg-item input { width: 100%; margin-top: 5px; padding: 5px; background: #000; color: #fff; border: 1px solid #555; text-align: center; border-radius: 4px; box-sizing: border-box;}
+        /* 페그워드 (스크롤 추가) */
+        .peg-scroll-container { width: 100%; max-width: 600px; max-height: 40vh; overflow-y: auto; background: #1a1a1a; border: 1px solid #444; border-radius: 8px; padding: 10px; }
+        .peg-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .peg-item { background: #222; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #333; }
+        .peg-item input { width: 100%; margin-top: 5px; padding: 5px; background: #000; color: #fff; border: 1px solid #555; text-align: center; border-radius: 4px; box-sizing: border-box; font-size: 0.8rem;}
 
         /* 백지 복습 */
         .blank-compare { text-align: left; background: #222; padding: 15px; border-radius: 8px; width: 100%; box-sizing: border-box; border: 1px solid #444; margin-top: 15px; }
@@ -110,7 +110,7 @@
 
     <div class="tab-container">
         <button class="tab-btn active" onclick="switchTab('tab-palace', this)">장소법(궁전)</button>
-        <button class="tab-btn" onclick="switchTab('tab-story', this)">연상법(스토리)</button>
+        <button class="tab-btn" onclick="switchTab('tab-story', this)">연상법(AI스토리)</button>
         <button class="tab-btn" onclick="switchTab('tab-acronym', this)">두음법(첫글자)</button>
         <button class="tab-btn" onclick="switchTab('tab-chunk', this)">청킹(의미단위)</button>
         <button class="tab-btn" onclick="switchTab('tab-peg', this)">페그법(숫자)</button>
@@ -129,10 +129,12 @@
     </div>
 
     <div id="tab-story" class="tab-content">
-        <p style="color: #aaa; margin-bottom: 10px;">외워야 할 키워드를 쉼표(,)로 입력하면 억지스러운 시각적 스토리를 강제로 만들어냅니다.</p>
-        <textarea id="storyInput" placeholder="예: 라우터, 스위치, 방화벽, 서버"></textarea>
-        <button class="btn-blue" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="processStory()">🔗 억지 스토리 만들기</button>
-        <div id="storyResult" class="result-box" style="flex-direction: column; align-items: center; text-align: center; line-height: 2;"></div>
+        <p style="color: #aaa; margin-bottom: 5px;">구글 AI Studio에서 무료 API 키를 받아 입력하세요.</p>
+        <input type="text" id="apiKeyInput" class="input-text" placeholder="Gemini API 키 입력 (저장됨)" style="max-width: 600px; margin-bottom: 15px;">
+        
+        <textarea id="storyInput" placeholder="외울 단어를 쉼표(,)로 입력하세요. 예: 라우터, 스위치, 방화벽"></textarea>
+        <button class="btn-blue" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="processStoryAI()">🤖 AI 억지 스토리 생성</button>
+        <div id="storyResult" class="result-box" style="background: #222; padding: 15px; border-radius: 8px; text-align: left; line-height: 1.6;">AI가 여기에 스토리를 작성합니다.</div>
     </div>
 
     <div id="tab-acronym" class="tab-content">
@@ -143,25 +145,29 @@
     </div>
 
     <div id="tab-chunk" class="tab-content">
-        <p style="color: #aaa; margin-bottom: 10px;">목록을 쉼표(,)로 구분해 입력하세요. 뇌가 기억하기 쉬운 단위로 분할합니다.</p>
+        <p style="color: #aaa; margin-bottom: 10px;">목록을 쉼표(,)로 구분해 입력하세요.</p>
         <textarea id="chunkInput" placeholder="예: 결합도, 응집도, 다형성, 캡슐화, 상속"></textarea>
         <button class="btn-purple" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="processChunking()">🔪 조각내기</button>
         <div id="chunkResult" class="result-box"></div>
     </div>
 
     <div id="tab-peg" class="tab-content">
-        <p style="color: #aaa; margin-bottom: 10px; text-align: center;">숫자와 비슷한 모양의 단어를 지정해두면, 숫자를 외울 때 유용합니다.</p>
-        <div class="peg-grid" id="pegContainer"></div>
-        <button class="btn-blue" style="margin-top: 20px; width: 100%; max-width: 600px;" onclick="savePegs()">💾 페그 저장</button>
+        <p style="color: #aaa; margin-bottom: 10px; text-align: center;">0부터 99까지 숫자에 대응하는 단어를 저장하세요.</p>
+        
+        <div class="peg-scroll-container">
+            <div class="peg-grid" id="pegContainer"></div>
+        </div>
+        <button class="btn-blue" style="margin-top: 15px; width: 100%; max-width: 600px;" onclick="savePegs()">💾 전체 페그 저장</button>
+        
         <div style="width: 100%; max-width: 600px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #444;">
-            <p style="color: #aaa; margin-bottom: 5px;">긴 숫자 입력 시 단어로 변환:</p>
-            <input type="text" id="pegTestInput" class="input-text" placeholder="숫자 입력 (예: 123)" oninput="testPeg()">
-            <div id="pegTestResult" style="margin-top: 10px; font-weight: bold; color: var(--kakao-yellow); font-size: 1.2rem; text-align: center;"></div>
+            <p style="color: #aaa; margin-bottom: 5px;">숫자를 단어로 변환 테스트:</p>
+            <input type="text" id="pegTestInput" class="input-text" placeholder="두 자리씩 입력 (예: 1234 -> 12, 34)" oninput="testPeg()">
+            <div id="pegTestResult" style="margin-top: 10px; font-weight: bold; color: var(--kakao-yellow); font-size: 1.1rem; text-align: center; word-break: keep-all;"></div>
         </div>
     </div>
 
     <div id="tab-blank" class="tab-content">
-        <p style="color: #aaa; margin-bottom: 10px;">가장 확실한 암기법입니다. 원본을 가린 상태에서 기억나는 대로 적고 비교하세요.</p>
+        <p style="color: #aaa; margin-bottom: 10px;">원본을 가린 상태에서 기억나는 대로 적고 비교하세요.</p>
         <textarea id="blankOriginal" placeholder="여기에 외울 원본 내용을 복사해서 붙여넣으세요."></textarea>
         <button class="btn-red" id="hideOriginalBtn" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="hideOriginal()">🙈 원본 가리고 인출 시작</button>
         
@@ -242,7 +248,6 @@
             document.getElementById('itemImage').value = '';
             modal.style.display = 'flex'; document.getElementById('itemText').focus();
         }
-
         function closeModal() { modal.style.display = 'none'; }
 
         function compressImage(file, callback) {
@@ -296,35 +301,35 @@
             if (isPalaceHidden) palaceWrapper.classList.add('hidden-text'); else palaceWrapper.classList.remove('hidden-text');
         }
 
-        // --- 2. 연상법 (강제 스토리 자동 생성) ---
-        function processStory() {
-            const input = document.getElementById('storyInput').value;
-            if (!input.trim()) return;
-            const words = input.split(',').map(w => w.trim()).filter(w => w !== "");
-            const res = document.getElementById('storyResult');
-            
-            const actions = [
-                "가(이) 갑자기 미친듯이 춤을 추며 날아가서",
-                "을(를) 변기에 넣고 내렸더니 나타난",
-                "와(과) 합체하여 거대해진",
-                "가(이) 콧구멍에서 뿜어져 나와서",
-                "을(를) 한 입에 집어삼킨 뒤 뱉어낸",
-                "가(이) 갑자기 폭발하며 튀어나온",
-                "을(를) 향해 미사일처럼 날아간",
-                "가(이) 울면서 도망치다 정면으로 부딪힌"
-            ];
+        // --- 2. 연상법 (Gemini API 연동) ---
+        const savedApiKey = localStorage.getItem('geminiApiKey');
+        if(savedApiKey) document.getElementById('apiKeyInput').value = savedApiKey;
 
-            let storyHTML = "";
-            words.forEach((w, i) => {
-                storyHTML += `<span class="story-word">${w}</span>`;
-                if(i < words.length - 1) {
-                    const randomAction = actions[Math.floor(Math.random() * actions.length)];
-                    storyHTML += ` <span style="color:#aaa; font-size: 0.9rem;">${randomAction}</span> <br><br>`;
-                } else {
-                    storyHTML += ` <span style="color:#aaa; font-size: 0.9rem;">(으)로 끔찍하게 끝이 났다.</span>`;
-                }
-            });
-            res.innerHTML = storyHTML;
+        async function processStoryAI() {
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            const words = document.getElementById('storyInput').value.trim();
+            const res = document.getElementById('storyResult');
+
+            if (!words) return alert("외울 단어를 입력하세요.");
+            if (!apiKey) return alert("무료 구글 Gemini API 키를 입력해야 합니다.");
+            
+            localStorage.setItem('geminiApiKey', apiKey);
+            res.innerHTML = "AI가 억지 스토리를 생성 중입니다... ⏳";
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `다음 단어들을 순서대로 모두 포함해서 시각적으로 아주 어이없고 억지스러운 한 문장의 연상 스토리를 만들어줘. 단어: ${words}` }] }]
+                    })
+                });
+                const data = await response.json();
+                if(data.error) throw new Error(data.error.message);
+                res.innerHTML = data.candidates[0].content.parts[0].text;
+            } catch (err) {
+                res.innerHTML = `<span style="color:red;">오류 발생: API 키가 잘못되었거나 네트워크 문제일 수 있습니다.<br>(${err.message})</span>`;
+            }
         }
 
         // --- 3. 두음법 ---
@@ -351,28 +356,46 @@
             }
         }
 
-        // --- 5. 페그워드 ---
-        let pegData = JSON.parse(localStorage.getItem('pegData')) || ["영(0)", "연필(1)", "오리(2)", "갈매기(3)", "돛단배(4)", "갈고리(5)", "지팡이(6)", "지렛대(7)", "눈사람(8)", "지팡이(9)"];
+        // --- 5. 페그워드 (0~99 확장) ---
+        let pegData = JSON.parse(localStorage.getItem('pegData99'));
+        if (!pegData || pegData.length < 100) {
+            pegData = Array(100).fill("");
+            const defaultPegs = ["영(0)", "연필(1)", "오리(2)", "갈매기(3)", "돛단배(4)", "갈고리(5)", "지팡이(6)", "지렛대(7)", "눈사람(8)", "지팡이(9)"];
+            for(let i=0; i<10; i++) pegData[i] = defaultPegs[i];
+            for(let i=10; i<100; i++) pegData[i] = String(i); 
+        }
+
         function initPegs() {
             const container = document.getElementById('pegContainer'); container.innerHTML = '';
-            for(let i=0; i<10; i++) {
+            for(let i=0; i<100; i++) {
                 const div = document.createElement('div'); div.className = 'peg-item';
-                div.innerHTML = `<strong>${i}</strong><br><input type="text" id="peg-input-${i}" value="${pegData[i]}">`;
+                div.innerHTML = `<strong style="font-size:0.8rem;">${String(i).padStart(2, '0')}</strong><br><input type="text" id="peg-input-${i}" value="${pegData[i]}">`;
                 container.appendChild(div);
             }
         }
         function savePegs() {
-            for(let i=0; i<10; i++) { pegData[i] = document.getElementById(`peg-input-${i}`).value.trim() || String(i); }
-            localStorage.setItem('pegData', JSON.stringify(pegData)); alert("페그워드가 저장되었습니다."); testPeg();
+            for(let i=0; i<100; i++) { pegData[i] = document.getElementById(`peg-input-${i}`).value.trim() || String(i); }
+            localStorage.setItem('pegData99', JSON.stringify(pegData)); alert("99개의 페그워드가 저장되었습니다."); testPeg();
         }
         function testPeg() {
             const input = document.getElementById('pegTestInput').value.replace(/[^0-9]/g, '');
             const res = document.getElementById('pegTestResult');
             if(!input) { res.innerText = ""; return; }
-            res.innerText = input.split('').map(num => pegData[parseInt(num)]).join(' - ');
+            
+            let resultWords = [];
+            for (let i = 0; i < input.length; i += 2) {
+                if (i + 1 < input.length) {
+                    const num = parseInt(input.substring(i, i + 2));
+                    resultWords.push(pegData[num]);
+                } else {
+                    const num = parseInt(input[i]);
+                    resultWords.push(pegData[num]);
+                }
+            }
+            res.innerText = resultWords.join(' - ');
         }
 
-        // --- 6. 백지 복습 (인출 연습) ---
+        // --- 6. 백지 복습 ---
         function hideOriginal() {
             const orig = document.getElementById('blankOriginal').value.trim();
             if(!orig) return alert("먼저 외울 원본 내용을 작성해주세요.");
