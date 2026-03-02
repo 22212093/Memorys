@@ -21,24 +21,27 @@
         }
 
         header {
-            padding: 15px 20px; background: #1a1a1a;
+            padding: 15px 20px 5px 20px; background: #1a1a1a;
             border-bottom: 1px solid #333; text-align: center;
         }
-
-        header h1 { margin: 0; font-size: 1.5rem; color: var(--kakao-yellow); }
+        header h1 { margin: 0 0 10px 0; font-size: 1.5rem; color: var(--kakao-yellow); }
+        
+        .global-api-box { margin-bottom: 10px; }
+        .global-api-box input { width: 100%; max-width: 400px; padding: 8px; border-radius: 6px; border: 1px solid #555; background: #000; color: #fff; text-align: center; }
 
         .tab-container { display: flex; background: #1a1a1a; border-bottom: 1px solid #444; flex-wrap: wrap; }
         .tab-btn {
-            flex: 1 1 30%; padding: 12px 2px; border: none; background: none; 
+            flex: 1 1 20%; padding: 12px 2px; border: none; background: none; 
             color: #888; font-weight: bold; cursor: pointer;
-            transition: 0.3s; font-size: 0.85rem; white-space: nowrap;
+            transition: 0.3s; font-size: 0.8rem; white-space: nowrap; border-bottom: 3px solid transparent;
         }
         .tab-btn.active { color: var(--text-light); border-bottom: 3px solid var(--main-green); background: #2a2a2a; }
 
         .tab-content { display: none; flex: 1; padding: 20px; overflow-y: auto; flex-direction: column; align-items: center; }
         .tab-content.active { display: flex; }
 
-        button { border-radius: 8px; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; font-size: 0.9rem; color: #fff; }
+        button { border-radius: 8px; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; font-size: 0.9rem; color: #fff; transition: 0.2s;}
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-green { background: var(--main-green); }
         .btn-blue { background: var(--pomo-blue); }
         .btn-red { background: #f44336; }
@@ -56,45 +59,46 @@
             width: 100%; height: 100%; position: absolute; top: 0; left: 0;
         }
         .grid-cell {
-            border: 1px dashed rgba(255,255,255,0.2); display: flex; flex-direction: column;
+            border: 1px dashed rgba(255,255,255,0.4); display: flex; flex-direction: column;
             align-items: center; justify-content: center; cursor: pointer; position: relative;
             padding: 5px; box-sizing: border-box; text-align: center; word-break: keep-all;
         }
-        .grid-cell:hover { background: rgba(255,255,255,0.1); }
         .cell-content {
-            background: rgba(0,0,0,0.7); padding: 5px; border-radius: 8px;
+            background: rgba(0,0,0,0.8); padding: 5px; border-radius: 8px;
             font-size: 0.85rem; font-weight: bold; color: #fff; display: flex; flex-direction: column; align-items: center;
             width: 90%; max-height: 90%; overflow: hidden;
         }
         .cell-content img { max-width: 100%; max-height: 60px; border-radius: 4px; margin-bottom: 4px; }
         .delete-btn {
             position: absolute; top: 2px; right: 2px; background: red; color: white;
-            border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px;
+            border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 10px;
             cursor: pointer; display: none; justify-content: center; align-items: center; padding: 0; z-index: 10;
         }
         .grid-cell:hover .delete-btn { display: flex; }
         .control-row { display: flex; gap: 10px; margin-top: 15px; width: 100%; max-width: 800px; flex-wrap: wrap; }
 
-        /* 공통 텍스트에리어 */
+        /* 공통 텍스트에리어 및 인풋 */
         textarea {
-            width: 100%; max-width: 600px; height: 100px; background: #222; color: #fff;
-            border: 1px solid #555; border-radius: 8px; padding: 10px; font-size: 1rem; resize: none; box-sizing: border-box;
+            width: 100%; max-width: 600px; height: 90px; background: #222; color: #fff;
+            border: 1px solid #555; border-radius: 8px; padding: 10px; font-size: 0.95rem; resize: none; box-sizing: border-box;
         }
         .input-text { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #555; background: #111; color: #fff; box-sizing: border-box; }
-        .result-box { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; width: 100%; max-width: 600px; justify-content: center; }
         
-        /* 탭 특화 스타일 */
-        .chunk-box { background: #2a2a2a; border-left: 4px solid var(--kakao-yellow); padding: 15px; border-radius: 6px; font-weight: bold; flex: 1 1 calc(33% - 15px); min-width: 110px; text-align: center; }
-        .acronym-text { font-size: 2.5rem; color: var(--kakao-yellow); font-weight: bold; letter-spacing: 5px; background: #222; padding: 20px; border-radius: 12px; text-align: center; width: 100%; }
-        
-        /* 페그워드 */
-        .peg-scroll-container { width: 100%; max-width: 600px; max-height: 40vh; overflow-y: auto; background: #1a1a1a; border: 1px solid #444; border-radius: 8px; padding: 10px; }
-        .peg-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .peg-item { background: #222; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #333; }
-        .peg-item input { width: 100%; margin-top: 5px; padding: 5px; background: #000; color: #fff; border: 1px solid #555; text-align: center; border-radius: 4px; box-sizing: border-box; font-size: 0.8rem;}
+        /* 결과 및 로그 영역 */
+        .result-box { 
+            background: #222; padding: 15px; border-radius: 8px; border: 1px solid #444; 
+            width: 100%; max-width: 600px; margin-top: 15px; text-align: left; line-height: 1.6; font-size: 1rem; box-sizing: border-box; min-height: 50px;
+        }
+        .log-section { width: 100%; max-width: 600px; margin-top: 25px; border-top: 2px dashed #444; padding-top: 15px; }
+        .log-container { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; max-height: 250px; overflow-y: auto; padding-right: 5px; }
+        .log-item { background: #1a1a1a; border-left: 4px solid var(--pomo-blue); padding: 12px; border-radius: 4px; position: relative; font-size: 0.9rem; line-height: 1.4; }
+        .log-date { font-size: 0.75rem; color: #888; margin-bottom: 5px; display: block; }
+        .log-del-btn { position: absolute; top: 10px; right: 10px; background: #f44336; color: #fff; border: none; border-radius: 4px; padding: 4px 8px; font-size: 0.7rem; cursor: pointer; }
 
-        /* 백지 복습 */
-        .blank-compare { text-align: left; background: #222; padding: 15px; border-radius: 8px; width: 100%; box-sizing: border-box; border: 1px solid #444; margin-top: 15px; }
+        /* 페그워드 */
+        .peg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; max-width: 600px; }
+        .peg-item { background: #222; padding: 8px; border-radius: 8px; text-align: center; border: 1px solid #333; }
+        .peg-item input { width: 100%; margin-top: 5px; padding: 5px; background: #000; color: #fff; border: 1px solid #555; text-align: center; border-radius: 4px; box-sizing: border-box; font-size: 0.8rem;}
 
         /* 모달 */
         #inputModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
@@ -106,19 +110,23 @@
 
     <header>
         <h1>🧠 초집중 암기 연구소</h1>
+        <div class="global-api-box">
+            <input type="text" id="globalApiKey" placeholder="여기에 Gemini API 키 1회 입력 (자동 저장)">
+        </div>
     </header>
 
     <div class="tab-container">
         <button class="tab-btn active" onclick="switchTab('tab-palace', this)">장소법(궁전)</button>
-        <button class="tab-btn" onclick="switchTab('tab-story', this)">연상법(AI스토리)</button>
-        <button class="tab-btn" onclick="switchTab('tab-acronym', this)">두음법(첫글자)</button>
-        <button class="tab-btn" onclick="switchTab('tab-chunk', this)">청킹(의미단위)</button>
-        <button class="tab-btn" onclick="switchTab('tab-peg', this)">페그법(숫자)</button>
-        <button class="tab-btn" onclick="switchTab('tab-blank', this)">백지복습(인출)</button>
+        <button class="tab-btn" onclick="switchTab('tab-keyword', this)">키워드추출</button>
+        <button class="tab-btn" onclick="switchTab('tab-story', this)">연상법(AI)</button>
+        <button class="tab-btn" onclick="switchTab('tab-acronym', this)">두음법(AI)</button>
+        <button class="tab-btn" onclick="switchTab('tab-chunk', this)">청킹(AI)</button>
+        <button class="tab-btn" onclick="switchTab('tab-peg', this)">페그법(AI)</button>
+        <button class="tab-btn" onclick="switchTab('tab-blank', this)">백지복습</button>
     </div>
 
     <div id="tab-palace" class="tab-content active">
-        <p style="color: #aaa; margin-bottom: 10px; text-align: center;">배경 이미지를 설정하고 원하는 칸을 눌러 요소를 고정하세요.</p>
+        <p style="color: #aaa; margin-bottom: 10px; text-align: center;">배경과 고유 색상을 가진 칸에 요소를 배치하세요.</p>
         <div id="palaceWrapper"><div id="palaceGrid"></div></div>
         <div class="control-row">
             <input type="file" id="bgUploader" accept="image/*" style="display: none;">
@@ -128,54 +136,108 @@
         </div>
     </div>
 
-    <div id="tab-story" class="tab-content">
-        <p style="color: #aaa; margin-bottom: 5px;">구글 AI Studio에서 무료 API 키를 받아 입력하세요.</p>
-        <input type="text" id="apiKeyInput" class="input-text" placeholder="Gemini API 키 입력 (저장됨)" style="max-width: 600px; margin-bottom: 15px;">
+    <div id="tab-keyword" class="tab-content">
+        <p style="color: #aaa; margin-bottom: 10px;">긴 문장에서 암기에 필요한 핵심 키워드만 AI가 추출합니다.</p>
+        <textarea id="input_keyword" placeholder="여기에 긴 텍스트를 입력하세요."></textarea>
+        <button class="btn-blue" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="runAI('keyword', '다음 텍스트에서 암기에 가장 중요한 핵심 키워드를 추출해서 쉼표로 구분해 나열해. 부연설명 없이 키워드만 출력해. 텍스트: ' + document.getElementById('input_keyword').value, this)">🔍 핵심 키워드 추출</button>
+        <div id="result_keyword" class="result-box">결과가 여기에 표시됩니다.</div>
+        <button class="btn-green" id="save_keyword" style="display:none; margin-top:10px; width:100%; max-width:600px;" onclick="saveLog('keyword')">💾 이 결과 저장</button>
         
-        <textarea id="storyInput" placeholder="외울 단어를 쉼표(,)로 입력하세요. 예: 라우터, 스위치, 방화벽"></textarea>
-        <button class="btn-blue" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="processStoryAI()">🤖 강렬한 AI 스토리 생성</button>
-        <div id="storyResult" class="result-box" style="background: #222; padding: 15px; border-radius: 8px; text-align: left; line-height: 1.6; font-size: 1.1rem; color: var(--kakao-yellow);">AI가 여기에 스토리를 작성합니다.</div>
+        <div class="log-section">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="color:#aaa; margin:0;">저장된 로그</h4>
+                <button class="btn-gray" style="padding:4px 8px; font-size:0.8rem;" onclick="clearAllLogs('keyword')">전체 삭제</button>
+            </div>
+            <div id="logs_keyword" class="log-container"></div>
+        </div>
+    </div>
+
+    <div id="tab-story" class="tab-content">
+        <p style="color: #aaa; margin-bottom: 10px;">외울 단어를 입력하면 AI가 뇌리에 박힐 엽기적인 스토리를 만듭니다.</p>
+        <textarea id="input_story" placeholder="쉼표(,)로 단어 입력. 예: 라우터, 스위치, 방화벽"></textarea>
+        <button class="btn-blue" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="runAI('story', '다음 단어들을 순서대로 포함해서, 뇌에 확 박히도록 아주 짧고(30자 내외) 엽기적이고 자극적인 한 문장의 스토리를 만들어. 부연 설명 없이 핵심만 써. 단어: ' + document.getElementById('input_story').value, this)">🤖 강렬한 AI 스토리 생성</button>
+        <div id="result_story" class="result-box">결과가 여기에 표시됩니다.</div>
+        <button class="btn-green" id="save_story" style="display:none; margin-top:10px; width:100%; max-width:600px;" onclick="saveLog('story')">💾 이 결과 저장</button>
+        
+        <div class="log-section">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="color:#aaa; margin:0;">저장된 로그</h4>
+                <button class="btn-gray" style="padding:4px 8px; font-size:0.8rem;" onclick="clearAllLogs('story')">전체 삭제</button>
+            </div>
+            <div id="logs_story" class="log-container"></div>
+        </div>
     </div>
 
     <div id="tab-acronym" class="tab-content">
-        <p style="color: #aaa; margin-bottom: 10px;">외울 단어들을 띄어쓰기나 쉼표로 입력하여 앞글자만 추출합니다.</p>
-        <textarea id="acronymInput" placeholder="예: 정보, 통신, 기사"></textarea>
-        <button class="btn-green" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="processAcronym()">🔍 앞글자 추출</button>
-        <div class="result-box"><div id="acronymResult" class="acronym-text">-</div></div>
+        <p style="color: #aaa; margin-bottom: 10px;">외울 단어들을 입력하면 AI가 앞글자를 조합해 외우기 쉬운 문장을 만듭니다.</p>
+        <textarea id="input_acronym" placeholder="예: 정보, 통신, 기사"></textarea>
+        <button class="btn-blue" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="runAI('acronym', '주어진 단어들의 앞글자만 따서 외우기 쉽고 말이 되는 아주 짧은 한 문장이나 단어를 만들어줘. 단어: ' + document.getElementById('input_acronym').value, this)">🔍 AI 앞글자 조합</button>
+        <div id="result_acronym" class="result-box" style="font-size: 1.2rem; font-weight: bold; color: var(--kakao-yellow);">결과가 여기에 표시됩니다.</div>
+        <button class="btn-green" id="save_acronym" style="display:none; margin-top:10px; width:100%; max-width:600px;" onclick="saveLog('acronym')">💾 이 결과 저장</button>
+
+        <div class="log-section">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="color:#aaa; margin:0;">저장된 로그</h4>
+                <button class="btn-gray" style="padding:4px 8px; font-size:0.8rem;" onclick="clearAllLogs('acronym')">전체 삭제</button>
+            </div>
+            <div id="logs_acronym" class="log-container"></div>
+        </div>
     </div>
 
     <div id="tab-chunk" class="tab-content">
-        <p style="color: #aaa; margin-bottom: 10px;">목록을 쉼표(,)로 구분해 입력하세요.</p>
-        <textarea id="chunkInput" placeholder="예: 결합도, 응집도, 다형성, 캡슐화, 상속"></textarea>
-        <button class="btn-purple" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="processChunking()">🔪 조각내기</button>
-        <div id="chunkResult" class="result-box"></div>
+        <p style="color: #aaa; margin-bottom: 10px;">목록을 입력하면 AI가 논리적인 그룹으로 묶어줍니다.</p>
+        <textarea id="input_chunk" placeholder="예: 결합도, 응집도, 다형성, 캡슐화, 상속"></textarea>
+        <button class="btn-blue" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="runAI('chunk', '주어진 목록을 뇌가 기억하기 쉽게 3~4개씩 논리적으로 그룹화(청킹)해주고, 각 그룹의 핵심 주제를 아주 짧게 달아서 정리해. 목록: ' + document.getElementById('input_chunk').value, this)">🔪 AI 논리적 조각내기</button>
+        <div id="result_chunk" class="result-box">결과가 여기에 표시됩니다.</div>
+        <button class="btn-green" id="save_chunk" style="display:none; margin-top:10px; width:100%; max-width:600px;" onclick="saveLog('chunk')">💾 이 결과 저장</button>
+
+        <div class="log-section">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="color:#aaa; margin:0;">저장된 로그</h4>
+                <button class="btn-gray" style="padding:4px 8px; font-size:0.8rem;" onclick="clearAllLogs('chunk')">전체 삭제</button>
+            </div>
+            <div id="logs_chunk" class="log-container"></div>
+        </div>
     </div>
 
     <div id="tab-peg" class="tab-content">
-        <p style="color: #aaa; margin-bottom: 10px; text-align: center;">0부터 99까지 숫자에 대응하는 단어를 저장하세요.</p>
-        
-        <div class="peg-scroll-container">
-            <div class="peg-grid" id="pegContainer"></div>
-        </div>
+        <p style="color: #aaa; margin-bottom: 10px; text-align: center;">0부터 20까지의 고정된 이미지를 저장하세요.</p>
+        <div class="peg-grid" id="pegContainer"></div>
         <button class="btn-blue" style="margin-top: 15px; width: 100%; max-width: 600px;" onclick="savePegs()">💾 전체 페그 저장</button>
         
         <div style="width: 100%; max-width: 600px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #444;">
-            <p style="color: #aaa; margin-bottom: 5px;">숫자를 단어로 변환 테스트:</p>
-            <input type="text" id="pegTestInput" class="input-text" placeholder="두 자리씩 입력 (예: 1234 -> 12, 34)" oninput="testPeg()">
-            <div id="pegTestResult" style="margin-top: 10px; font-weight: bold; color: var(--kakao-yellow); font-size: 1.1rem; text-align: center; word-break: keep-all;"></div>
+            <p style="color: #aaa; margin-bottom: 5px;">숫자를 AI 연상 스토리로 변환 (최대 20 이하 단위로 띄어쓰기):</p>
+            <input type="text" id="input_peg" class="input-text" placeholder="예: 2 15 7">
+            <button class="btn-purple" style="margin-top: 10px; width: 100%;" onclick="runAIPeg(this)">🤖 숫자 변환 및 AI 연상</button>
+            <div id="result_peg" class="result-box">결과가 여기에 표시됩니다.</div>
+            <button class="btn-green" id="save_peg" style="display:none; margin-top:10px; width:100%;" onclick="saveLog('peg')">💾 이 결과 저장</button>
+        </div>
+
+        <div class="log-section">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="color:#aaa; margin:0;">저장된 로그</h4>
+                <button class="btn-gray" style="padding:4px 8px; font-size:0.8rem;" onclick="clearAllLogs('peg')">전체 삭제</button>
+            </div>
+            <div id="logs_peg" class="log-container"></div>
         </div>
     </div>
 
     <div id="tab-blank" class="tab-content">
-        <p style="color: #aaa; margin-bottom: 10px;">원본을 가린 상태에서 기억나는 대로 적고 비교하세요.</p>
-        <textarea id="blankOriginal" placeholder="여기에 외울 원본 내용을 복사해서 붙여넣으세요."></textarea>
-        <button class="btn-red" id="hideOriginalBtn" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="hideOriginal()">🙈 원본 가리고 인출 시작</button>
+        <p style="color: #aaa; margin-bottom: 10px;">원본과 테스트 내용을 AI가 비교하여 누락된 핵심을 팩트 위주로 지적합니다.</p>
+        <textarea id="input_blank_orig" placeholder="[원본] 외워야 할 내용을 입력하세요."></textarea>
+        <textarea id="input_blank_test" placeholder="[테스트] 안 보고 기억나는 대로 전부 적으세요." style="margin-top: 10px;"></textarea>
         
-        <div id="testArea" style="display:none; width: 100%; max-width: 600px; margin-top: 15px; flex-direction: column; align-items: center;">
-            <textarea id="blankTest" placeholder="기억나는 대로 전부 적어보세요..."></textarea>
-            <button class="btn-green" style="margin-top: 10px; width: 100%;" onclick="compareBlank()">🔍 결과 비교하기</button>
+        <button class="btn-red" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="runAI('blank', '다음은 내가 외워야 할 원본과 내가 안보고 적은 테스트 내용이다. 원본과 비교해서 테스트에서 누락된 핵심 키워드를 찾고 팩트 위주로 아주 짧게 피드백해. 과장된 칭찬 금지.\n[원본]: ' + document.getElementById('input_blank_orig').value + '\n[테스트]: ' + document.getElementById('input_blank_test').value, this)">🔍 AI 결과 비교</button>
+        <div id="result_blank" class="result-box">결과가 여기에 표시됩니다.</div>
+        <button class="btn-green" id="save_blank" style="display:none; margin-top:10px; width:100%; max-width:600px;" onclick="saveLog('blank')">💾 이 결과 저장</button>
+
+        <div class="log-section">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="color:#aaa; margin:0;">저장된 로그</h4>
+                <button class="btn-gray" style="padding:4px 8px; font-size:0.8rem;" onclick="clearAllLogs('blank')">전체 삭제</button>
+            </div>
+            <div id="logs_blank" class="log-container"></div>
         </div>
-        <div id="blankResult" class="blank-compare" style="display:none;"></div>
     </div>
 
     <div id="inputModal">
@@ -192,14 +254,119 @@
     </div>
 
     <script>
+        // 전역 API 키 설정
+        const apiKeyInput = document.getElementById('globalApiKey');
+        if(localStorage.getItem('geminiApiKey')) { apiKeyInput.value = localStorage.getItem('geminiApiKey'); }
+        apiKeyInput.addEventListener('input', () => localStorage.setItem('geminiApiKey', apiKeyInput.value.trim()));
+
+        // 탭 전환 및 로그 렌더링
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
+            
+            const logType = tabId.replace('tab-', '');
+            if(logType !== 'palace') renderLogs(logType);
         }
 
-        // --- 1. 장소법 ---
+        // 공통 AI 호출 함수
+        async function runAI(type, promptText, btnElement) {
+            const apiKey = apiKeyInput.value.trim();
+            if (!apiKey) return alert("상단의 Gemini API 키를 입력해야 합니다.");
+            
+            // 입력값 검증 (단, peg와 blank는 로직이 달라서 예외처리 또는 별도 검증)
+            if(type !== 'peg' && type !== 'blank') {
+                if(!document.getElementById('input_' + type).value.trim()) return alert("내용을 입력해주세요.");
+            }
+            if(type === 'blank') {
+                if(!document.getElementById('input_blank_orig').value.trim() || !document.getElementById('input_blank_test').value.trim()) 
+                    return alert("원본과 테스트 내용을 모두 입력해주세요.");
+            }
+
+            const resEl = document.getElementById('result_' + type);
+            const originalBtnText = btnElement.innerText;
+            btnElement.innerText = "⏳ AI 처리 중...";
+            btnElement.disabled = true;
+            resEl.innerHTML = "처리 중입니다...";
+            document.getElementById('save_' + type).style.display = 'none';
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+                });
+                const data = await response.json();
+                if(data.error) throw new Error(data.error.message);
+                
+                const resultText = data.candidates[0].content.parts[0].text;
+                resEl.innerHTML = resultText.replace(/\n/g, '<br>');
+                
+                // 임시 저장용 변수 및 저장 버튼 표시
+                window['currentResult_' + type] = resultText;
+                document.getElementById('save_' + type).style.display = 'block';
+
+            } catch (err) {
+                resEl.innerHTML = `<span style="color:red;">오류 발생: API 키 오류 또는 네트워크 문제<br>(${err.message})</span>`;
+            } finally {
+                btnElement.innerText = originalBtnText;
+                btnElement.disabled = false;
+            }
+        }
+
+        // 로그 시스템 로직
+        function saveLog(type) {
+            const content = window['currentResult_' + type];
+            if (!content) return;
+            
+            let logs = JSON.parse(localStorage.getItem(`logs_${type}`)) || [];
+            logs.unshift({ id: Date.now(), text: content, date: new Date().toLocaleString() });
+            localStorage.setItem(`logs_${type}`, JSON.stringify(logs));
+            
+            alert("로그가 저장되었습니다.");
+            document.getElementById('save_' + type).style.display = 'none';
+            renderLogs(type);
+        }
+
+        function renderLogs(type) {
+            const container = document.getElementById(`logs_${type}`);
+            if(!container) return;
+            container.innerHTML = '';
+            
+            let logs = JSON.parse(localStorage.getItem(`logs_${type}`)) || [];
+            if(logs.length === 0) {
+                container.innerHTML = '<div style="color:#777; font-size:0.8rem; padding:10px;">저장된 로그가 없습니다.</div>';
+                return;
+            }
+
+            logs.forEach(log => {
+                const div = document.createElement('div');
+                div.className = 'log-item';
+                div.innerHTML = `
+                    <span class="log-date">${log.date}</span>
+                    <div style="padding-right: 40px;">${log.text.replace(/\n/g, '<br>')}</div>
+                    <button class="log-del-btn" onclick="deleteLog('${type}', ${log.id})">삭제</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function deleteLog(type, id) {
+            let logs = JSON.parse(localStorage.getItem(`logs_${type}`)) || [];
+            logs = logs.filter(log => log.id !== id);
+            localStorage.setItem(`logs_${type}`, JSON.stringify(logs));
+            renderLogs(type);
+        }
+
+        function clearAllLogs(type) {
+            if(confirm("이 탭의 모든 로그를 삭제하시겠습니까?")) {
+                localStorage.removeItem(`logs_${type}`);
+                renderLogs(type);
+            }
+        }
+
+        // --- 1. 장소법 (컬러 그리드) ---
         const gridContainer = document.getElementById('palaceGrid');
         const palaceWrapper = document.getElementById('palaceWrapper');
         const modal = document.getElementById('inputModal');
@@ -208,6 +375,13 @@
         let isPalaceHidden = false;
         let selectedCellIndex = -1;
 
+        // 칸별 식별용 고유 색상 배열
+        const gridColors = [
+            'rgba(255, 99, 132, 0.25)', 'rgba(54, 162, 235, 0.25)', 'rgba(255, 206, 86, 0.25)', 'rgba(75, 192, 192, 0.25)',
+            'rgba(153, 102, 255, 0.25)', 'rgba(255, 159, 64, 0.25)', 'rgba(201, 203, 207, 0.25)', 'rgba(255, 205, 210, 0.25)',
+            'rgba(225, 190, 231, 0.25)', 'rgba(197, 202, 233, 0.25)', 'rgba(178, 223, 219, 0.25)', 'rgba(220, 231, 117, 0.25)'
+        ];
+
         if (savedBg) palaceWrapper.style.backgroundImage = `url(${savedBg})`;
 
         function initGrid() {
@@ -215,8 +389,10 @@
             for(let i=0; i<12; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'grid-cell';
+                cell.style.backgroundColor = gridColors[i]; // 배경색 적용
                 cell.dataset.index = i;
                 cell.onclick = (e) => openModal(i, e);
+                
                 if (gridData[i]) {
                     const contentDiv = document.createElement('div');
                     contentDiv.className = 'cell-content';
@@ -250,32 +426,32 @@
         }
         function closeModal() { modal.style.display = 'none'; }
 
-        function compressImage(file, callback) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const cvs = document.createElement('canvas'); const maxSize = 150; 
-                    let w = img.width, h = img.height;
-                    if (w > h && w > maxSize) { h *= maxSize / w; w = maxSize; }
-                    else if (h > maxSize) { w *= maxSize / h; h = maxSize; }
-                    cvs.width = w; cvs.height = h; cvs.getContext('2d').drawImage(img, 0, 0, w, h);
-                    callback(cvs.toDataURL('image/jpeg', 0.6));
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
         function saveItemToCell() {
             const text = document.getElementById('itemText').value.trim();
             const fileInput = document.getElementById('itemImage');
+            
             const saveData = (base64Img) => {
                 gridData[selectedCellIndex] = { text: text, img: base64Img };
                 try { localStorage.setItem('palaceGridData', JSON.stringify(gridData)); initGrid(); closeModal(); } 
                 catch (e) { alert("용량 초과입니다. 이미지를 지워주세요."); }
             };
-            if (fileInput.files && fileInput.files[0]) compressImage(fileInput.files[0], saveData);
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const cvs = document.createElement('canvas'); const maxSize = 150; 
+                        let w = img.width, h = img.height;
+                        if (w > h && w > maxSize) { h *= maxSize / w; w = maxSize; }
+                        else if (h > maxSize) { w *= maxSize / h; h = maxSize; }
+                        cvs.width = w; cvs.height = h; cvs.getContext('2d').drawImage(img, 0, 0, w, h);
+                        saveData(cvs.toDataURL('image/jpeg', 0.6));
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
             else {
                 if (!text && (!gridData[selectedCellIndex] || !gridData[selectedCellIndex].img)) return alert("내용을 입력해주세요.");
                 saveData(gridData[selectedCellIndex] ? gridData[selectedCellIndex].img : null);
@@ -301,140 +477,50 @@
             if (isPalaceHidden) palaceWrapper.classList.add('hidden-text'); else palaceWrapper.classList.remove('hidden-text');
         }
 
-        // --- 2. 연상법 (Gemini API 연동) ---
-        const savedApiKey = localStorage.getItem('geminiApiKey');
-        if(savedApiKey) document.getElementById('apiKeyInput').value = savedApiKey;
-
-        async function processStoryAI() {
-            const apiKey = document.getElementById('apiKeyInput').value.trim();
-            const words = document.getElementById('storyInput').value.trim();
-            const res = document.getElementById('storyResult');
-
-            if (!words) return alert("외울 단어를 입력하세요.");
-            if (!apiKey) return alert("무료 구글 Gemini API 키를 입력해야 합니다.");
-            
-            localStorage.setItem('geminiApiKey', apiKey);
-            res.innerHTML = "뇌리에 박힐 스토리를 생성 중입니다... ⏳";
-
-            try {
-                const promptText = `다음 단어들을 순서대로 모두 포함해서, 뇌에 확 박히도록 아주 짧고(30자 내외) 엽기적이고 자극적인 한 문장의 스토리를 만들어줘. 부연 설명 없이 핵심만 써. 단어: ${words}`;
-                
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: promptText }] }]
-                    })
-                });
-                const data = await response.json();
-                if(data.error) throw new Error(data.error.message);
-                res.innerHTML = data.candidates[0].content.parts[0].text;
-            } catch (err) {
-                res.innerHTML = `<span style="color:red;">오류 발생: API 키가 잘못되었거나 네트워크 문제일 수 있습니다.<br>(${err.message})</span>`;
-            }
-        }
-
-        // --- 3. 두음법 ---
-        function processAcronym() {
-            const input = document.getElementById('acronymInput').value;
-            if (!input.trim()) return;
-            const words = input.split(/[\s,]+/).filter(w => w.trim() !== "");
-            const initials = words.map(w => w.charAt(0)).join('');
-            document.getElementById('acronymResult').innerText = initials || "-";
-        }
-
-        // --- 4. 청킹 ---
-        function processChunking() {
-            const input = document.getElementById('chunkInput').value;
-            if (!input.trim()) return;
-            const items = input.split(',').map(item => item.trim()).filter(item => item !== "");
-            const res = document.getElementById('chunkResult');
-            res.innerHTML = '';
-            for (let i = 0; i < items.length; i += 3) {
-                const chunk = items.slice(i, i + 3);
-                const box = document.createElement('div');
-                box.className = 'chunk-box'; box.innerHTML = chunk.join('<br><br>');
-                res.appendChild(box);
-            }
-        }
-
-        // --- 5. 페그워드 ---
-        let pegData = JSON.parse(localStorage.getItem('pegData99'));
-        if (!pegData || pegData.length < 100) {
-            pegData = Array(100).fill("");
+        // --- 5. 페그워드 (0~20 축소 및 AI 연상 추가) ---
+        let pegData = JSON.parse(localStorage.getItem('pegData20'));
+        if (!pegData || pegData.length < 21) {
+            pegData = Array(21).fill("");
             const defaultPegs = ["영(0)", "연필(1)", "오리(2)", "갈매기(3)", "돛단배(4)", "갈고리(5)", "지팡이(6)", "지렛대(7)", "눈사람(8)", "지팡이(9)"];
             for(let i=0; i<10; i++) pegData[i] = defaultPegs[i];
-            for(let i=10; i<100; i++) pegData[i] = String(i); 
+            for(let i=10; i<=20; i++) pegData[i] = String(i); 
         }
 
         function initPegs() {
             const container = document.getElementById('pegContainer'); container.innerHTML = '';
-            for(let i=0; i<100; i++) {
+            for(let i=0; i<=20; i++) {
                 const div = document.createElement('div'); div.className = 'peg-item';
-                div.innerHTML = `<strong style="font-size:0.8rem;">${String(i).padStart(2, '0')}</strong><br><input type="text" id="peg-input-${i}" value="${pegData[i]}">`;
+                div.innerHTML = `<strong style="font-size:0.8rem;">${i}</strong><br><input type="text" id="peg-input-${i}" value="${pegData[i]}">`;
                 container.appendChild(div);
             }
         }
         function savePegs() {
-            for(let i=0; i<100; i++) { pegData[i] = document.getElementById(`peg-input-${i}`).value.trim() || String(i); }
-            localStorage.setItem('pegData99', JSON.stringify(pegData)); alert("99개의 페그워드가 저장되었습니다."); testPeg();
+            for(let i=0; i<=20; i++) { pegData[i] = document.getElementById(`peg-input-${i}`).value.trim() || String(i); }
+            localStorage.setItem('pegData20', JSON.stringify(pegData)); alert("페그워드가 저장되었습니다.");
         }
-        function testPeg() {
-            const input = document.getElementById('pegTestInput').value.replace(/[^0-9]/g, '');
-            const res = document.getElementById('pegTestResult');
-            if(!input) { res.innerText = ""; return; }
-            
-            let resultWords = [];
-            for (let i = 0; i < input.length; i += 2) {
-                if (i + 1 < input.length) {
-                    const num = parseInt(input.substring(i, i + 2));
-                    resultWords.push(pegData[num]);
-                } else {
-                    const num = parseInt(input[i]);
-                    resultWords.push(pegData[num]);
+        
+        function runAIPeg(btnElement) {
+            const rawInput = document.getElementById('input_peg').value;
+            if(!rawInput.trim()) return alert("숫자를 입력하세요.");
+
+            const parts = rawInput.match(/\d+/g);
+            if(!parts) return alert("유효한 숫자가 없습니다.");
+
+            let wordList = [];
+            parts.forEach(numStr => {
+                const num = parseInt(numStr, 10);
+                if (num >= 0 && num <= 20 && pegData[num]) {
+                    wordList.push(pegData[num]);
                 }
-            }
-            res.innerText = resultWords.join(' - ');
+            });
+
+            if(wordList.length === 0) return alert("0~20 사이의 숫자를 입력해주세요.");
+
+            const promptText = `내가 지정한 페그워드들은 다음과 같아: [${wordList.join(', ')}]. 이 단어들을 순서대로 사용해서 뇌에 확 박힐 수 있도록 짧고 자극적인 한 문장의 스토리를 지어줘.`;
+            runAI('peg', promptText, btnElement);
         }
 
-        // --- 6. 백지 복습 ---
-        function hideOriginal() {
-            const orig = document.getElementById('blankOriginal').value.trim();
-            if(!orig) return alert("먼저 외울 원본 내용을 작성해주세요.");
-            document.getElementById('blankOriginal').style.display = 'none';
-            document.getElementById('hideOriginalBtn').style.display = 'none';
-            document.getElementById('testArea').style.display = 'flex';
-            document.getElementById('blankResult').style.display = 'none';
-            document.getElementById('blankTest').value = '';
-            document.getElementById('blankTest').focus();
-        }
-
-        function compareBlank() {
-            const orig = document.getElementById('blankOriginal').value;
-            const test = document.getElementById('blankTest').value;
-            const res = document.getElementById('blankResult');
-            
-            res.style.display = 'block';
-            res.innerHTML = `
-                <div style="margin-bottom: 15px;">
-                    <strong style="color: var(--kakao-yellow);">[원본 내용]</strong><br>
-                    <div style="color: #ddd; margin-top: 5px; white-space: pre-wrap;">${orig}</div>
-                </div>
-                <div>
-                    <strong style="color: var(--pomo-blue);">[내가 인출한 내용]</strong><br>
-                    <div style="color: #ddd; margin-top: 5px; white-space: pre-wrap;">${test}</div>
-                </div>
-                <button class="btn-gray" style="margin-top: 15px; width: 100%;" onclick="resetBlank()">다시 연습하기</button>
-            `;
-            document.getElementById('testArea').style.display = 'none';
-        }
-
-        function resetBlank() {
-            document.getElementById('blankOriginal').style.display = 'block';
-            document.getElementById('hideOriginalBtn').style.display = 'block';
-            document.getElementById('blankResult').style.display = 'none';
-        }
-
+        // 초기 실행
         initGrid();
         initPegs();
 
