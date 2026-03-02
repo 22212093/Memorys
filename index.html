@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>초집중 암기 연구소</title>
+    <style>
+        :root { 
+            --main-green: #4CAF50; 
+            --kakao-yellow: #FEE500; 
+            --pomo-blue: #4285F4; 
+            --bg-dark: #121212;
+            --text-light: #ffffff;
+        }
+        
+        html, body { 
+            width: 100%; height: 100%; margin: 0; padding: 0; 
+            background: var(--bg-dark); color: var(--text-light); 
+            font-family: 'Pretendard', sans-serif; 
+            display: flex; flex-direction: column;
+        }
+
+        header {
+            padding: 15px 20px; background: #1a1a1a;
+            border-bottom: 1px solid #333; text-align: center;
+        }
+
+        header h1 { margin: 0; font-size: 1.5rem; color: var(--kakao-yellow); }
+
+        .tab-container { display: flex; background: #1a1a1a; border-bottom: 1px solid #444; flex-wrap: wrap; }
+        .tab-btn {
+            flex: 1 1 20%; padding: 12px 2px; border: none; background: none; 
+            color: #888; font-weight: bold; cursor: pointer;
+            transition: 0.3s; font-size: 0.85rem; white-space: nowrap;
+        }
+        .tab-btn.active { color: var(--text-light); border-bottom: 3px solid var(--main-green); background: #2a2a2a; }
+
+        .tab-content { display: none; flex: 1; padding: 20px; overflow-y: auto; flex-direction: column; align-items: center; }
+        .tab-content.active { display: flex; }
+
+        button { border-radius: 8px; border: none; padding: 10px 15px; cursor: pointer; font-weight: bold; font-size: 0.9rem; color: #fff; }
+        .btn-green { background: var(--main-green); }
+        .btn-blue { background: var(--pomo-blue); }
+        .btn-red { background: #f44336; }
+        .btn-gray { background: #555; }
+        .btn-purple { background: #9C27B0; }
+
+        /* 1. 장소법 (그리드 기반 기억의 궁전) */
+        #palaceWrapper {
+            width: 100%; max-width: 800px; height: 50vh; min-height: 400px;
+            background-color: #222; background-size: cover; background-position: center;
+            border: 2px solid #555; border-radius: 12px; position: relative;
+        }
+        
+        #palaceGrid {
+            display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr);
+            width: 100%; height: 100%; position: absolute; top: 0; left: 0;
+        }
+
+        .grid-cell {
+            border: 1px dashed rgba(255,255,255,0.2); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; cursor: pointer; position: relative;
+            padding: 5px; box-sizing: border-box; text-align: center; word-break: keep-all;
+        }
+        
+        .grid-cell:hover { background: rgba(255,255,255,0.1); }
+
+        .cell-content {
+            background: rgba(0,0,0,0.7); padding: 5px; border-radius: 8px;
+            font-size: 0.85rem; font-weight: bold; color: #fff; display: flex; flex-direction: column; align-items: center;
+            width: 90%; max-height: 90%; overflow: hidden;
+        }
+
+        .cell-content img { max-width: 100%; max-height: 60px; border-radius: 4px; margin-bottom: 4px; }
+        
+        .delete-btn {
+            position: absolute; top: 2px; right: 2px; background: red; color: white;
+            border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px;
+            cursor: pointer; display: none; justify-content: center; align-items: center; padding: 0; z-index: 10;
+        }
+        .grid-cell:hover .delete-btn { display: flex; }
+
+        .control-row { display: flex; gap: 10px; margin-top: 15px; width: 100%; max-width: 800px; flex-wrap: wrap; }
+
+        /* 공통 텍스트에리어 및 인풋 */
+        textarea {
+            width: 100%; max-width: 600px; height: 100px; background: #222; color: #fff;
+            border: 1px solid #555; border-radius: 8px; padding: 10px; font-size: 1rem; resize: none; box-sizing: border-box;
+        }
+        
+        .input-text { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #555; background: #111; color: #fff; box-sizing: border-box; }
+
+        /* 결과 박스 공통 */
+        .result-box { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; width: 100%; max-width: 600px; justify-content: center; }
+        
+        /* 탭별 특화 스타일 */
+        .chunk-box { background: #2a2a2a; border-left: 4px solid var(--kakao-yellow); padding: 15px; border-radius: 6px; font-weight: bold; flex: 1 1 calc(33% - 15px); min-width: 110px; text-align: center; }
+        .story-word { background: var(--pomo-blue); padding: 12px; border-radius: 8px; font-weight: bold; }
+        .acronym-text { font-size: 2.5rem; color: var(--kakao-yellow); font-weight: bold; letter-spacing: 5px; background: #222; padding: 20px; border-radius: 12px; text-align: center; width: 100%; }
+        
+        /* 5. 페그워드 (숫자 매칭) */
+        .peg-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; width: 100%; max-width: 600px; }
+        .peg-item { background: #222; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #444; }
+        .peg-item input { width: 100%; margin-top: 5px; padding: 5px; background: #000; color: #fff; border: 1px solid #555; text-align: center; border-radius: 4px; box-sizing: border-box;}
+
+        /* 모달 */
+        #inputModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: #222; padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; border: 1px solid #444; }
+        .hidden-text .cell-content { opacity: 0; visibility: hidden; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🧠 초집중 암기 연구소</h1>
+    </header>
+
+    <div class="tab-container">
+        <button class="tab-btn active" onclick="switchTab('tab-palace', this)">장소법(궁전)</button>
+        <button class="tab-btn" onclick="switchTab('tab-story', this)">연상법(스토리)</button>
+        <button class="tab-btn" onclick="switchTab('tab-acronym', this)">두음법(첫글자)</button>
+        <button class="tab-btn" onclick="switchTab('tab-chunk', this)">청킹(의미단위)</button>
+        <button class="tab-btn" onclick="switchTab('tab-peg', this)">페그법(숫자)</button>
+    </div>
+
+    <div id="tab-palace" class="tab-content active">
+        <p style="color: #aaa; margin-bottom: 10px; text-align: center;">배경 이미지를 설정하고 원하는 칸을 눌러 요소를 고정하세요.</p>
+        
+        <div id="palaceWrapper">
+            <div id="palaceGrid">
+                </div>
+        </div>
+
+        <div class="control-row">
+            <input type="file" id="bgUploader" accept="image/*" style="display: none;">
+            <button class="btn-green" onclick="document.getElementById('bgUploader').click()">🖼️ 배경 설정</button>
+            <button class="btn-blue" onclick="toggleHidePalace()" id="hideBtn">🙈 가리기</button>
+            <button class="btn-red" onclick="clearPalace()" style="margin-left: auto;">🗑️ 초기화</button>
+        </div>
+    </div>
+
+    <div id="tab-story" class="tab-content">
+        <p style="color: #aaa; margin-bottom: 10px;">외워야 할 키워드를 쉼표(,)로 입력하고, 억지스러운 시각적 스토리를 지어내세요.</p>
+        <textarea id="storyInput" placeholder="예: 컴퓨터, 사과, 비행기, 우주인"></textarea>
+        <button class="btn-blue" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="processStory()">🔗 연결 고리 만들기</button>
+        <div id="storyResult" class="result-box"></div>
+    </div>
+
+    <div id="tab-acronym" class="tab-content">
+        <p style="color: #aaa; margin-bottom: 10px;">외울 단어들을 띄어쓰기나 쉼표로 입력하여 앞글자만 추출합니다.</p>
+        <textarea id="acronymInput" placeholder="예: 정보, 통신, 기사"></textarea>
+        <button class="btn-green" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="processAcronym()">🔍 앞글자 추출</button>
+        <div class="result-box"><div id="acronymResult" class="acronym-text">-</div></div>
+    </div>
+
+    <div id="tab-chunk" class="tab-content">
+        <p style="color: #aaa; margin-bottom: 10px;">목록을 쉼표(,)로 구분해 입력하세요. 뇌가 기억하기 쉬운 3~4개 단위로 분할합니다.</p>
+        <textarea id="chunkInput" placeholder="예: 결합도, 응집도, 다형성, 캡슐화, 상속"></textarea>
+        <button class="btn-purple" style="margin-top: 10px; width: 100%; max-width: 600px;" onclick="processChunking()">🔪 조각내기</button>
+        <div id="chunkResult" class="result-box"></div>
+    </div>
+
+    <div id="tab-peg" class="tab-content">
+        <p style="color: #aaa; margin-bottom: 10px; text-align: center;">숫자와 비슷한 모양의 단어를 지정해두면, 숫자를 외울 때 유용합니다.<br>(예: 1=연필, 2=오리, 3=갈매기)</p>
+        <div class="peg-grid" id="pegContainer">
+            </div>
+        <button class="btn-blue" style="margin-top: 20px; width: 100%; max-width: 600px;" onclick="savePegs()">💾 페그 저장</button>
+        
+        <div style="width: 100%; max-width: 600px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #444;">
+            <p style="color: #aaa; margin-bottom: 5px;">긴 숫자 입력 시 단어로 변환:</p>
+            <input type="text" id="pegTestInput" class="input-text" placeholder="숫자 입력 (예: 123)" oninput="testPeg()">
+            <div id="pegTestResult" style="margin-top: 10px; font-weight: bold; color: var(--kakao-yellow); font-size: 1.2rem; text-align: center;"></div>
+        </div>
+    </div>
+
+    <div id="inputModal">
+        <div class="modal-content">
+            <h3 style="margin: 0; color: var(--kakao-yellow); text-align: center;">칸에 기억 추가</h3>
+            <input type="text" id="itemText" class="input-text" placeholder="암기할 텍스트 입력">
+            <label style="font-size: 0.8rem; color: #888;">이미지 첨부 (선택)</label>
+            <input type="file" id="itemImage" accept="image/*" style="color:#ccc;">
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn-gray" style="flex: 1;" onclick="closeModal()">취소</button>
+                <button class="btn-blue" style="flex: 1;" onclick="saveItemToCell()">저장</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 탭 전환
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // --- 1. 장소법 (그리드 칸 기준) ---
+        const gridContainer = document.getElementById('palaceGrid');
+        const palaceWrapper = document.getElementById('palaceWrapper');
+        const modal = document.getElementById('inputModal');
+        
+        // 칸 데이터: { "0": {text: "", img: ""}, "1": ... }
+        let gridData = JSON.parse(localStorage.getItem('palaceGridData')) || {};
+        let savedBg = localStorage.getItem('palaceBg');
+        let isPalaceHidden = false;
+        let selectedCellIndex = -1;
+
+        if (savedBg) palaceWrapper.style.backgroundImage = `url(${savedBg})`;
+
+        // 12개 칸 생성 (4열 x 3행)
+        function initGrid() {
+            gridContainer.innerHTML = '';
+            for(let i=0; i<12; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.dataset.index = i;
+                cell.onclick = (e) => openModal(i, e);
+                
+                if (gridData[i]) {
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'cell-content';
+                    if (gridData[i].img) contentDiv.innerHTML += `<img src="${gridData[i].img}">`;
+                    if (gridData[i].text) contentDiv.innerHTML += `<span>${gridData[i].text}</span>`;
+                    
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'delete-btn';
+                    delBtn.innerText = 'X';
+                    delBtn.onclick = (e) => deleteCellData(i, e);
+                    
+                    cell.appendChild(contentDiv);
+                    cell.appendChild(delBtn);
+                }
+                gridContainer.appendChild(cell);
+            }
+        }
+
+        // 배경 설정
+        document.getElementById('bgUploader').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                palaceWrapper.style.backgroundImage = `url(${event.target.result})`;
+                localStorage.setItem('palaceBg', event.target.result);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function openModal(index, event) {
+            if (event.target.classList.contains('delete-btn')) return;
+            selectedCellIndex = index;
+            document.getElementById('itemText').value = gridData[index] ? gridData[index].text : '';
+            document.getElementById('itemImage').value = '';
+            modal.style.display = 'flex';
+            document.getElementById('itemText').focus();
+        }
+
+        function closeModal() { modal.style.display = 'none'; }
+
+        // 로컬스토리지 용량 보호 이미지 압축
+        function compressImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const cvs = document.createElement('canvas');
+                    const maxSize = 150; 
+                    let w = img.width, h = img.height;
+                    if (w > h && w > maxSize) { h *= maxSize / w; w = maxSize; }
+                    else if (h > maxSize) { w *= maxSize / h; h = maxSize; }
+                    cvs.width = w; cvs.height = h;
+                    cvs.getContext('2d').drawImage(img, 0, 0, w, h);
+                    callback(cvs.toDataURL('image/jpeg', 0.6));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveItemToCell() {
+            const text = document.getElementById('itemText').value.trim();
+            const fileInput = document.getElementById('itemImage');
+            
+            const saveData = (base64Img) => {
+                gridData[selectedCellIndex] = { text: text, img: base64Img };
+                try {
+                    localStorage.setItem('palaceGridData', JSON.stringify(gridData));
+                    initGrid();
+                    closeModal();
+                } catch (e) {
+                    alert("용량 초과입니다. 이미지를 지워주세요.");
+                }
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                compressImage(fileInput.files[0], saveData);
+            } else {
+                if (!text && (!gridData[selectedCellIndex] || !gridData[selectedCellIndex].img)) return alert("내용을 입력해주세요.");
+                saveData(gridData[selectedCellIndex] ? gridData[selectedCellIndex].img : null);
+            }
+        }
+
+        function deleteCellData(index, event) {
+            event.stopPropagation();
+            delete gridData[index];
+            localStorage.setItem('palaceGridData', JSON.stringify(gridData));
+            initGrid();
+        }
+
+        function clearPalace() {
+            if (confirm("배경과 모든 칸의 기억을 지우시겠습니까?")) {
+                gridData = {}; 
+                localStorage.removeItem('palaceGridData'); 
+                localStorage.removeItem('palaceBg');
+                palaceWrapper.style.backgroundImage = 'none'; 
+                initGrid();
+            }
+        }
+
+        function toggleHidePalace() {
+            isPalaceHidden = !isPalaceHidden;
+            const btn = document.getElementById('hideBtn');
+            btn.innerText = isPalaceHidden ? '👀 보기' : '🙈 가리기';
+            btn.className = isPalaceHidden ? 'btn-green' : 'btn-blue';
+            if (isPalaceHidden) palaceWrapper.classList.add('hidden-text');
+            else palaceWrapper.classList.remove('hidden-text');
+        }
+
+        // --- 2. 연상법 (스토리텔링) ---
+        function processStory() {
+            const input = document.getElementById('storyInput').value;
+            if (!input.trim()) return;
+            const words = input.split(',').map(w => w.trim()).filter(w => w !== "");
+            const res = document.getElementById('storyResult');
+            res.innerHTML = '';
+            words.forEach((w, i) => {
+                const span = document.createElement('span');
+                span.className = 'story-word'; span.innerText = w;
+                res.appendChild(span);
+                if(i < words.length - 1) {
+                    res.innerHTML += `<span style="font-size: 1.5rem;">➡️</span>`;
+                }
+            });
+        }
+
+        // --- 3. 두음법 ---
+        function processAcronym() {
+            const input = document.getElementById('acronymInput').value;
+            if (!input.trim()) return;
+            const words = input.split(/[\s,]+/).filter(w => w.trim() !== "");
+            const initials = words.map(w => w.charAt(0)).join('');
+            document.getElementById('acronymResult').innerText = initials || "-";
+        }
+
+        // --- 4. 청킹 ---
+        function processChunking() {
+            const input = document.getElementById('chunkInput').value;
+            if (!input.trim()) return;
+            const items = input.split(',').map(item => item.trim()).filter(item => item !== "");
+            const res = document.getElementById('chunkResult');
+            res.innerHTML = '';
+            for (let i = 0; i < items.length; i += 3) {
+                const chunk = items.slice(i, i + 3);
+                const box = document.createElement('div');
+                box.className = 'chunk-box'; box.innerHTML = chunk.join('<br><br>');
+                res.appendChild(box);
+            }
+        }
+
+        // --- 5. 페그법 (숫자 매칭) ---
+        let pegData = JSON.parse(localStorage.getItem('pegData')) || ["영(0)", "연필(1)", "오리(2)", "갈매기(3)", "돛단배(4)", "갈고리(5)", "지팡이(6)", "지렛대(7)", "눈사람(8)", "지팡이(9)"];
+        
+        function initPegs() {
+            const container = document.getElementById('pegContainer');
+            container.innerHTML = '';
+            for(let i=0; i<10; i++) {
+                const div = document.createElement('div');
+                div.className = 'peg-item';
+                div.innerHTML = `<strong>${i}</strong><br><input type="text" id="peg-input-${i}" value="${pegData[i]}">`;
+                container.appendChild(div);
+            }
+        }
+
+        function savePegs() {
+            for(let i=0; i<10; i++) { pegData[i] = document.getElementById(`peg-input-${i}`).value.trim() || String(i); }
+            localStorage.setItem('pegData', JSON.stringify(pegData));
+            alert("페그워드가 저장되었습니다.");
+            testPeg();
+        }
+
+        function testPeg() {
+            const input = document.getElementById('pegTestInput').value.replace(/[^0-9]/g, '');
+            const res = document.getElementById('pegTestResult');
+            if(!input) { res.innerText = ""; return; }
+            const resultWords = input.split('').map(num => pegData[parseInt(num)]).join(' - ');
+            res.innerText = resultWords;
+        }
+
+        // 초기화 실행
+        initGrid();
+        initPegs();
+
+    </script>
+</body>
+</html>
